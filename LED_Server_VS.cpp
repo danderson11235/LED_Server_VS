@@ -1,3 +1,4 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <stdio.h>
 #include <iostream>
 #include <winsock2.h>
@@ -9,7 +10,7 @@
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 #define REFTIMES_PER_SEC  10000000
 #define REFTIMES_PER_MILLISEC  10000
-#define SERVER "192.168.1.18"	//ip address of udp server
+#define SERVER "192.168.1.129"	//ip address of udp server
 #define BUFLEN 512	//Max length of buffer
 #define PORT 4210	//The port on which to listen for incoming data
 
@@ -31,9 +32,9 @@ int main(void)
 	//UDP
 	struct sockaddr_in si_other;
 	int s, slen = sizeof(si_other);
-	char message[BUFLEN] = "send";
+	char message[BUFLEN];
 	WSADATA wsa;
-	
+	/*
 	//fft
 	kiss_fftr_cfg cfg = kiss_fftr_alloc(nfft, 0, 0, 0);
 	float in[nfft];
@@ -89,7 +90,7 @@ int main(void)
 	bufferFrameCount / pwfx->nSamplesPerSec;
 
 	hr = pAudioClient->Start();  // Start recording.
-
+	*/
 	//Initialise winsock
 	printf("\nInitialising Winsock...");
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -115,15 +116,9 @@ int main(void)
 	//start communication
 	clock_t c_count_old = clock();
 	clock_t c_count_new = clock();
-	float* audio[nfft];
-	while (true)
-	{
-		if (c_count_new - c_count_old >= c_peri)
-		{
-			
-		}
-		c_count_new = clock();
-	}
+	//float* audio[nfft];
+	message[0] = (unsigned char)0;
+	message[1] = (unsigned char)0;
 
 	//send the message
 	if (sendto(s, message, strlen(message), 0, (struct sockaddr*)&si_other, slen) == SOCKET_ERROR)
@@ -135,7 +130,7 @@ int main(void)
 	closesocket(s);
 	WSACleanup();
 
-	kiss_fftr_free(cfg);
+	//kiss_fftr_free(cfg);
 	return 0;
 }
 
